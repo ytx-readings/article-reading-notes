@@ -95,6 +95,8 @@ Key questions to ask:
 | Cumulative Layout Shift (CLS) | measures the time from when the page starts loading to when the largest text block or image element is rendered on the screen. |
 | Time to First Byte (TTFB) | Measures the time it takes for the network to respond to a user request with the first byte of a resource. |
 
+Read more about how to optimize these metrics in [Optimizing Metrics](./Optimizing%20Metrics.md).
+
 ## References
 
 * [**web.dev**](https://web.dev/)
