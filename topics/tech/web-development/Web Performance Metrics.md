@@ -56,7 +56,7 @@ mindmap
 | Interaction to Next Paint (INP) | measures the latency of every tap, click, or keyboard interaction made with the page, and—based on the number of interactions—selects the worst interaction latency of the page (or close to the highest) as a single, representative value to describe a page's overall responsiveness. |
 | Total Blocking Time (TBT) | measures the total amount of time between FCP and TTI where the main thread was blocked for long enough to prevent input responsiveness. |
 | Cumulative Layout Shift (CLS) | measures the time from when the page starts loading to when the largest text block or image element is rendered on the screen. |
-| Time to First Byte (TTFB) | Measures the time it takes for the network to respond to a user request with the first byte of a resource.
+| Time to First Byte (TTFB) | Measures the time it takes for the network to respond to a user request with the first byte of a resource. |
 
 ## References
 
