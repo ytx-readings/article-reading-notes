@@ -47,6 +47,18 @@ mindmap
     * Varies dramatically based on network conditions and user interactions
     * Page loading may not be deterministic; performance may be vastly different from user to user
 
+### [Types of metrics](https://web.dev/articles/user-centric-performance-metrics#types_of_metrics)
+
+| Type | Description |
+| --- | --- |
+| Perceived load speed | how quickly a page can load and render all of its visual elements to the screen. |
+| Load responsiveness | how quickly a page can load and execute any required JavaScript code in order for components to respond quickly to user interaction. |
+| Runtime responsiveness | after page load, how quickly can the page respond to user interaction. |
+| Visual stability | do elements on the page shift in ways that users don't expect and potentially interfere with their interactions? |
+| Smoothness | Do transitions and animations render at a consistent frame rate and flow fluidly from one state to the next? |
+
+**Note:** _No single metric_ is sufficient to capture all the performance characteristics of a page.
+
 ### [Important metrics to measure](https://web.dev/articles/user-centric-performance-metrics#important_metrics_to_measure)
 
 | Metric | Description |
