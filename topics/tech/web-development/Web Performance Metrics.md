@@ -15,13 +15,42 @@
 
 ```mermaid
 mindmap
-    root(Important metrics)
-        ("Largest Contentful Paint (LCP)")
-        ("Cumulative Layout Shift (CLS)")
-        ("Interaction to Next Paint (INP)")
-        ("Time to First Byte (TTFB)")
-        ("First Contentful Paint (FCP)")
-        ("Total Blocking Time (TBT)")
+    root(User-centric performance metrics)
+        Defining metrics
+            [Key questions]
+                ("Is it happening?")
+                ("Is it useful?")
+                ("Is it usable?")
+                ("Is it delightful?")
+        How metrics are measured
+            [**In the lab**: using tools to simulate a page load in a consistent, controlled environment]
+                (Essential when developing new features)
+                (Used before features are released in production, when gathering real performance data is not possible)
+                (Best way to prevent performance regressions)
+            [**In the field**: on real users actually loading and interacting with the page]
+                (Not necessarily reflective of user experiences in the wild)
+                (Varies dramatically based on network conditions and user interactions)
+                (Page loading may not be deterministic; performance may be vastly different from user to user)
+        Types of metrics
+            (Perceived load speed)
+            (Load responsiveness)
+            (Runtime responsiveness)
+            (Visual stability)
+            (Smothness)
+        Important metrics to measure
+            ("Largest Contentful Paint (LCP)")
+            ("Cumulative Layout Shift (CLS)")
+            ("Interaction to Next Paint (INP)")
+            ("Time to First Byte (TTFB)")
+            ("First Contentful Paint (FCP)")
+            ("Total Blocking Time (TBT)")
+        Custom metrics
+            (User Timing API)
+            (Long Tasks API)
+            (Element Timing API)
+            (Navigation Timing API)
+            (Resource Timing API)
+            (Server timing)
 ```
 
 ## References
