@@ -2,6 +2,17 @@
 
 ## [User-centric performance metrics](https://web.dev/articles/user-centric-performance-metrics)
 
+### [How metrics are measured](https://web.dev/articles/user-centric-performance-metrics#how_metrics_are_measured)
+
+* **In the lab**: using tools to simulate a page load in a consistent, controlled environment
+    * Essential when developing new features
+    * Used before features are released in production, when gathering real performance data is not possible
+    * Best way to prevent performance regressions
+* **In the field**: on real users actually loading and interacting with the page
+    * Not necessarily reflective of user experiences in the wild
+    * Varies dramatically based on network conditions and user interactions
+    * Page loading may not be deterministic; performance may be vastly different from user to user
+
 ### [Important metrics to measure](https://web.dev/articles/user-centric-performance-metrics#important_metrics_to_measure)
 
 | Metric | Description |
@@ -23,14 +34,8 @@ mindmap
                 ("Is it usable?")
                 ("Is it delightful?")
         How metrics are measured
-            [**In the lab**: using tools to simulate a page load in a consistent, controlled environment]
-                (Essential when developing new features)
-                (Used before features are released in production, when gathering real performance data is not possible)
-                (Best way to prevent performance regressions)
-            [**In the field**: on real users actually loading and interacting with the page]
-                (Not necessarily reflective of user experiences in the wild)
-                (Varies dramatically based on network conditions and user interactions)
-                (Page loading may not be deterministic; performance may be vastly different from user to user)
+            (In the lab)
+            (In the field)
         Types of metrics
             (Perceived load speed)
             (Load responsiveness)
