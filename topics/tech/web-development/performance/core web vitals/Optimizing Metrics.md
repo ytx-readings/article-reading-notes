@@ -182,10 +182,14 @@ This document compares the important metrics to measure and the ways to optimize
             </td>
             <td>
                 <ul>
-                    <li>Reduce the impact of third-party code</li>
-                    <li>Reduce JavaScript execution time</li>
-                    <li>Minimize main thread work</li>
-                    <li>Keep request counts low and transfer sizes small</li>
+                    <li>Understand the common causes of layout shifts:</li>
+                    <ul>
+                        <li>Images without dimensions</li>
+                        <li>Ads, embeds, and other late-loaded content</li>
+                        <li>Animations</li>
+                        <li>Web fonts</li>
+                    </ul>
+                    <li>Make your pages eligible for the bfcache</li>
                 </ul>
             </td>
         </tr>
