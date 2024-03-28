@@ -36,6 +36,31 @@ mindmap
             (Server timing)
 ```
 
+### [Defining metrics](https://web.dev/articles/user-centric-performance-metrics#defining_metrics)
+
+Key questions to ask:
+
+<table>
+    <tbody>
+        <tr>
+            <th>Is it happening?</th>
+            <td>Did the navigation start successfully? Has the server responded?</td>
+        </tr>
+        <tr>
+            <th>Is it useful?</th>
+            <td>Has the page content rendered that the users can engage in?</td>
+        </tr>
+        <tr>
+            <th>Is it usable?</th>
+            <td>Can users interact with the page, or is it busy?</td>
+        </tr>
+        <tr>
+            <th>Is it happening?</th>
+            <td>Are the interactions smooth and natural, free of lag and jank?</td>
+        </tr>
+    </tbody>
+</table>
+
 ### [How metrics are measured](https://web.dev/articles/user-centric-performance-metrics#how_metrics_are_measured)
 
 * **In the lab**: using tools to simulate a page load in a consistent, controlled environment
