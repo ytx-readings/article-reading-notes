@@ -63,6 +63,26 @@ Computers usually have their applications run on multiple servers, called a serv
 
 ## Types of load balancing technology
 
+### Hardware load balancer
+
+A hardware-based load balancer is a hardware appliance that can securely process and redirect gigabytes of traffic to hundreds of different servers. You can store it in your data centers and use virtualization to create multiple digital or virtual load balancers that you can centrally manage.
+
+### Software load balancer
+
+Software-based load balancers are applications that perform all load balancing functions. You can install them on any server or access them as a fully managed third-party service.
+
+### Comparison between hardware load balancer and software load balancer
+
+* **Hardware load balancer**
+    * Needs initial investment, configuration, and ongoing maintenance
+    * May be used only to handle peak-time traffic spikes, but not to full capacity
+    * If traffic volume increases suddenly beyond current capacity, this will affect users until you purchase and set up another load balancer
+* **Software load balancer**
+    * More flexible and scalable
+    * Scale up and down easily
+    * More compatible with modern computing environments
+    * Less expensive to set up, manage, and use over time
+
 ## References
 
 * [Amazon AWS](https://aws.amazon.com/what-is/load-balancing/)
