@@ -55,6 +55,10 @@ Load balancers provided by cloud providers have built-in security features that 
 
 ## How load balancing works
 
+Computers usually have their applications run on multiple servers, called a server farm. User requests first go to the route balancer. Then the load balancer routes the requests to the server most appropriate for handling the request.
+
+![Load balancing AWS](../../../../images/load-balancing/load%20balancing%20AWS.png)
+
 ## Types of load balancing
 
 ## Types of load balancing technology
