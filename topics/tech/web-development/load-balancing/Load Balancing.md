@@ -61,6 +61,13 @@ Computers usually have their applications run on multiple servers, called a serv
 
 ## Types of load balancing
 
+| Type | Description |
+| --- | --- |
+| Application load balancing | Looks at request content, e.g. HTTP headers or SSL session IDs, to redirect traffic. |
+| Network load balancing | Examines IP address and other network information to redirect traffic optimally. They track the source of application traffic, and can assign a static IP to several servers. Uses [static](#static-load-balancing) and [dynamic load balancing](#dynamic-load-balancing) algorithms. |
+| Global server load balancing | Occurs across several geographically distributed server, e.g. multiple data centers in different countries and in third-party providers around the globe. Load balancers manage the application load within a region or zone, attempting to redirect traffic to a server that is geographically closest to the client. In case of server failure, load balancers may redirect traffic outside the client's geographic zone. |
+| DNS load balancing | You configure domain to route network requests across a pool of resources on your domain. Helpful for maintaining application availability and balancing network traffic across a globally distributed pool of resources. |
+
 ## Types of load balancing technology
 
 ### Hardware load balancer
