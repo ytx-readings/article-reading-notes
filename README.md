@@ -12,4 +12,10 @@
 
 ### Web Development
 
+#### Load Balancing
+
+* [Load Balancing](./topics/tech/web-development/load-balancing/Load%20Balancing.md)
+
+#### Performance
+
 * [Web Performance Metrics](./topics/tech/web-development/Web%20Performance%20Metrics.md)
