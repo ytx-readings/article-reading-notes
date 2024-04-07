@@ -34,9 +34,26 @@ Load balancers provided by cloud providers have built-in security features that 
 * Automatically redirect attack traffic to multiple backend servers to minimize impact
 * Route traffic through a group of network firewalls for additional security
 
-## How load balancing works
-
 ## Load balancing algorithms
+
+### Static load balancing
+
+| Algorithm | Description |
+| --- | --- |
+| Round-robin method | Doing load balancer on an authoritative name server, instead of on specialized hardware or software. The name server returns the IP addresses of different servers in the server farm turn by turn or in a round-robin fashion. |
+| Weighted round-robin method | Assigns a weight to each server in the server pool. The weight indicates the processing capacity of the server. The server with a higher weight receives more requests. |
+| IP hash method | Uses the client's IP address to determine which server to send the request to. The load balancer calculates the hash value of the client's IP address and then sends the request to the server with the corresponding hash value. |
+
+### Dynamic load balancing
+
+| Algorithm | Description |
+| --- | --- |
+| Least connections method | A connection is an open communication channel between a client and a server. When the client sends the first request to the server, they authenticate and establish an active connection between each other. In the least connection method, the load balancer checks which servers have the fewest active connections and sends traffic to those servers. This method assumes that all connections require equal processing power for all servers. |
+| Weighted least connection method | Assumes that some servers can handle more connections than others. You can assign different weights or capacities to each server. The load balancers sends new requests to the server with least connections by capacity. |
+| Least response time method | The response time is the time taken by the server to process the request and send the response back to the client. The least response time method combines the server response time active connections to determine the best server. The load balancer uses this algorithm to ensure fastest service to all users. |
+| Resource-based time method | In the resource-based method, load balancers distribute traffic by analyzing the current server load. Specialized software called an agent runs on each server and calculates usage of server resources, such as its computing capacity and memory. Then, the load balancer checks the agent for sufficient free resources before distributing traffic to that server. |
+
+## How load balancing works
 
 ## Types of load balancing
 
