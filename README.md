@@ -12,6 +12,11 @@
 
 ### Web Development
 
+#### HTTP
+
+* [HTTP methods](./topics/tech/web-development/http/methods/HTTP%20request%20methods.md)
+    * [`OPTIONS`](./topics/tech/web-development/http/methods/OPTIONS.md)
+
 #### Load Balancing
 
 * [Load Balancing](./topics/tech/web-development/load-balancing/Load%20Balancing.md)
