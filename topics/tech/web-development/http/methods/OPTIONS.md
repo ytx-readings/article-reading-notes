@@ -74,6 +74,7 @@ Connection: Keep-Alive
 
 Permitted status codes are `200 OK` and `204 No Content`. But some browsers incorrectly believe that `204 No Content` applies to the resource and do not send the subsequent request to fetch it.
 
-## Specifications
+## References
 
+* [MDN: HTTP `OPTIONS` method](https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/OPTIONS)
 * [HTTP Semantics `#OPTIONS`](https://www.rfc-editor.org/rfc/rfc9110#OPTIONS)
