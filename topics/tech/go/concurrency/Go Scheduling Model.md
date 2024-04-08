@@ -8,6 +8,11 @@ The scheduling mechanism of Go programs, called the **GPM scheduling model**, co
 * **Processor (P)**: A processor is a logical entity that executes a goroutine. It owns the executing resources by binding to a logical core. In addition to the Goroutine executed, it also has a local run queue, or "LRQ".
 * **Machine (M)**: A machine is actually an OS thread that is still managed by the OS, and must be placed on a core to execute. Each machine is individually attached to a processor, and this is how the performance of the scheduler is affected by the number of cores.
 
+### LRQ & GRQ: cooperating scheduler
+
+* The **local run queue (LRQ)** belongs to each processor, managing the Goroutines to be executed.
+* The **global run queue (GRQ)** manages the Goroutines unassigned to any processor.
+
 ## References
 
 * [[Medium] Scheduling In Go](https://medium.com/random-life-journal/scheduling-in-go-727c9b88c93a)
