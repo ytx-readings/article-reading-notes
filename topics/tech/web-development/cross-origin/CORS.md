@@ -13,3 +13,8 @@ The **CORS** (Cross-Origin Resource Sharing) is a system, consisting of transmit
 * `Access-Control-Request-Method`: Used when issuing a preflight request to let the server know what [HTTP method](../http/methods/HTTP%20request%20methods.md) will be used when the actual request is made.
 * `Origin`: Indicates where a fetch originates from.
 * `Timing-Allow-Origin`: Specifies origins that are allowed to see values of attributes retrieved via features of the Resource Timing API, which would otherwise be reported as zero due to cross-origin restrictions.
+
+## References
+
+* [[MDN] HTTP Access Control (CORS)](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS)
+* [[WHATWG] HTTP CORS protocol](https://fetch.spec.whatwg.org/#http-cors-protocol)
