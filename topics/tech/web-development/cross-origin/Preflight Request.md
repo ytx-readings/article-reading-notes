@@ -12,6 +12,32 @@ A preflight request is automatically issued by the browser. In normal cases, fro
 
 In CORS scenarios, cross-origin requests are preflighted since they may have implications for user data.
 
+## Examples
+
+### Sending a `DELETE` Request
+
+A client may ask the server if it could safely send a `DELETE` request, by sending a preflight request first:
+
+```http
+OPTIONS /resource/foo
+Access-Control-Request-Method: DELETE
+Access-Control-Request-Headers: Origin, X-Requested-With
+Origin: https://foo.bar.org
+```
+
+If the server allows it, then it responds to the preflight request with a `Access-Control-Allow-Methods` containing the `DELETE` method:
+
+```http
+HTTP/1.1 204 No Content
+Connection: keep-alive
+Access-Control-Allow-Origin: https://foo.bar.org
+Access-Control-Allow-Methods: POST, GET, OPTIONS, DELETE
+Access-Control-Allow-Headers: Origin, X-Requested-With
+Access-Control-Max-Age: 86400
+```
+
+The preflight request can be _optionally cached_ for requests created in the same URL using the `Access-Control-Max-Age` header. To cache preflight requests, the browser uses a specific cache separate from the normal HTTP cache. Preflight requests are never cached in the browser's general HTTP cache.
+
 ## References
 
 * [MDN](https://developer.mozilla.org/)
