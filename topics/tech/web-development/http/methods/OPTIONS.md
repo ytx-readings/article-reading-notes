@@ -31,7 +31,7 @@ Server: EOS (lax004/2813)
 
 ### Preflight request in CORS
 
-In [CORS](../../cross-origin/CORS.md), a [preflight request](../../cross-origin/Preflight%20Request.md) is sent with the `OPTIONS` method so that the server can respond if it is acceptable to send the request.
+In [CORS](../../CORS/CORS.md), a [preflight request](../../CORS/Preflight%20Request.md) is sent with the `OPTIONS` method so that the server can respond if it is acceptable to send the request.
 
 The following example requests permission for these parameters:
 
