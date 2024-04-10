@@ -15,5 +15,7 @@ The scheduling mechanism of Go programs, called the **GPM scheduling model**, co
 
 ## References
 
-* [[Medium] Scheduling In Go](https://medium.com/random-life-journal/scheduling-in-go-727c9b88c93a)
 * [[Ardan Labs] Scheduling In Go: Part II – Go Scheduler](https://www.ardanlabs.com/blog/2018/08/scheduling-in-go-part2.html)
+* [[Medium] Scheduling In Go](https://medium.com/random-life-journal/scheduling-in-go-727c9b88c93a)
+* [GMP 模型](https://go.cyub.vip/gmp/gmp-model/)
+* [[Golang 三关 - 典藏版] Golang 调度器 GMP 原理与调度全分析](https://learnku.com/articles/41728)
