@@ -76,5 +76,5 @@ Permitted status codes are `200 OK` and `204 No Content`. But some browsers inco
 
 ## References
 
-* [MDN: HTTP `OPTIONS` method](https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/OPTIONS)
-* [HTTP Semantics `#OPTIONS`](https://www.rfc-editor.org/rfc/rfc9110#OPTIONS)
+* [HTTP Semantics: `#OPTIONS`](https://www.rfc-editor.org/rfc/rfc9110#OPTIONS)
+* [[MDN] HTTP `OPTIONS` method](https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/OPTIONS)
