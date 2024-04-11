@@ -24,7 +24,7 @@ A promise's state can only change once, from pending (initial state) to either _
 
 The promise is resolved when the `resolveFunc` function is called, or rejected when the `rejectFunc` function is called. Note that if you call `resolveFunc` or `rejectFunc` and pass another `Promise` object as an argument, it can be said to be "resolved" but _still not "settled"_.
 
-If the executor function throws an error, it will cause the promise to be rejected, and its return value will be neglected.
+If the executor function throws an error, it will cause the promise to be rejected with that error, and its return value will be neglected. _However, if the `resolveFunc` or the `rejectFunc` is called before throwing the error, the promise will be resolved or rejected, and the error will be ignored._
 
 ## References
 
