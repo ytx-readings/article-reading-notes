@@ -9,6 +9,12 @@ new Promise(executor)
 ```
 
 * The `executor` is a function to be executed by the processor. It is a function with two parameters: `resolveFunc` and `rejectFunc`. The `resolveFunc` and `rejectFunc` are functions that are used to resolve or reject the promise.
+    * Both `resolvFunc` and `rejectFunc` can accept a single parameter of any type.
+
+        ```js
+        resolveFunc(value); // called on resolved
+        rejectFunc(reason); // called on rejected
+        ```
 
 ## Return value
 
