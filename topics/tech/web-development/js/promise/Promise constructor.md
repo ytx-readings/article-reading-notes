@@ -15,6 +15,9 @@ new Promise(executor)
         resolveFunc(value); // called on resolved
         rejectFunc(reason); // called on rejected
         ```
+    * The `executor` function's completion state has limited effects on the promise's state:
+        * The `return` statements only serve as control flows, but do not impact the promise's fulfillment value. If the executor exits and does not give chance for `resolveFunc` or `rejectFunc` to be called, the promise remains pending forever.
+        * If an error is thrown in the executor, the promise is rejected, unless `resolveFunc` or `rejectFunc` has already been called.
 
 ## Return value
 
