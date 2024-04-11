@@ -29,6 +29,39 @@ The promise is resolved when the `resolveFunc` function is called, or rejected w
 
 If the executor function throws an error, it will cause the promise to be rejected with that error, and its return value will be neglected. _However, if the `resolveFunc` or the `rejectFunc` is called before throwing the error, the promise will be resolved or rejected, and the error will be ignored._
 
+## Execution flow
+
+The typical flow of constructing a `Promise` object with an executor function is as follows:
+
+1. When the constructor generates the new `Promise` project, it also generates the corresponding pair of functions for `resolveFunc` and `rejectFunc` tethered to the `Promise` object.
+2. The `executor` function is called _synchronously_ (as soon as the `Promise` object is created) with the `resolveFunc` and `rejectFunc` functions as arguments.
+3. The `executor` function executes. The eventual completion of the asynchronous task is communicated with the promise instance via the side effect caused by `resolveFunc` or `rejectFunc`. The side effect is that the promise becomes "_settled_".
+    * If `resolvedFunc` is called first, the value passed will be _resolved_. The promise may stay pending (in case another _thenable_ is passed), become fulfilled (if a non-thenable value is passed), or become rejected (in case of an invalid resolution value).
+    * If `rejectFunc` is called first, the reason passed will instantly become _rejected_.
+    * Once one of the settling functions (`resolveFunc` or `rejectFunc`) is called, the promise stays settled. Only the _first call_ to `resolveFunc` or `rejectFunc` affects the promise's eventual state. Subsequent calls to the settling functions neither change the fulfillment value/rejection reason, nor toggle its eventual state from _resolved_ to _rejected_ or the opposite.
+4. Once the promise settles, it (_asynchronously_) invokes any further handlers through the `then()`, `catch()`, or `finally()` methods. The eventual fulfillment value or rejection reason is passed to the invocation or fulfillment and rejection handlers as an input parameter (see [Chained Promises](./Chained%20Promises.md)).
+
+### Example
+
+The callback-based `readFile` API, as shown in the following example, can be transformed into a promise-based one.
+
+```js
+const readFilePromise = (path) =>
+  new Promise((resolve, reject) => {
+    readFile(path, (error, result) => {
+      if (error) {
+        reject(error);
+      } else {
+        resolve(result);
+      }
+    });
+  });
+
+readFilePromise("./data.txt")
+  .then((result) => console.log(result))
+  .catch((error) => console.error("Failed to read data"));
+```
+
 ## References
 
 * [[ECMA] ECMA Language Specification](https://tc39.es/ecma262/multipage/control-abstraction-objects.html#sec-promise-constructor)
