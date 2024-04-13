@@ -181,6 +181,8 @@ doSomething()
     });
 ```
 
+(More details are explained in the [Nesting](#nesting) section)
+
 ### Using [`async`](./async-await/async%20functions.md)/[`await`](./async-await/await.md)
 
 Using `async`/`await` makes your code more intuitive and looks like synchronous code:
@@ -240,6 +242,44 @@ async function foo() {
 ```
 
 Promises solve a fundamental flaw with the callback pyramid of doom, by catching all errors, even thrown exceptions and programming errors. This is essential for functional composition of asynchronous operations. All errors are now handled by the [`catch()`](./methods/Promise.prototype.catch.md) method at the end of the chain, and you should almost never need to use `try`/`catch` without using `async`/`await`.
+
+### Nesting
+
+In the example above involving `listOfIngredients`, the first one has a promise chain nested inside the return value of another `then()` handler, while the second example uses an entirely flat chain. Simple promise chains are best kept flat without nesting, as nesting can be a result of careless composition.
+
+_Nesting is a control structure to limit the scopes of `catch` statements._ Specifically, a nested catch only catches failures in its scope and below, not errors higher up in the chain outside the nested scope. When used correctly, this gives greater precision in error recovery:
+
+```js
+doSomethingCritical()
+    .then((result) =>
+        doSomethingOptional(result)
+            .then((optionalResult) => doSomethingExtraNice(optionalResult))
+            .catch((e) => {}), // inner catch
+    ) // Ignore if optional stuff fails; proceed.
+    .then(() => moreCriticalStuff())
+    .catch((e) => console.error(`Critical failure: ${e.message}`)); // outer catch
+```
+
+The inner error-silencing catch only catches failures from `doSomethingOptional()` and `doSomethingExtraNice()`, after which the code continues to run `moreCriticalStuff()`. Importantly, if `doSomethingCritical()` fails, then its error is only caught by the outer and final `catch`, without being swallowed by the inner `catch`.
+
+The code may be written in `async`/`await` as well:
+
+```js
+async function main() {
+    try {
+        const result = await doSomethingCritical();
+        try {
+            const optionalResult = await doSomethingOptional(result);
+            await doSomethingExtraNice(optionalResult);
+        } catch (e) {
+            // Ignore failures in optional steps and proceed.
+        }
+        await moreCriticalStuff();
+    } catch (e) {
+        console.error(`Critical failure: ${e.message}`);
+    }
+}
+```
 
 ## Composition
 
