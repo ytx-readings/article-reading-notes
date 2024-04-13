@@ -365,6 +365,61 @@ There are four composition tools for running asynchronous operations concurrentl
 
 These methods allow you to run different promises concurrently, starting them simultaneously and making them not wait for each other.
 
+### Example: sequential composition
+
+Sequential composition is possible using some combinations of built-in methods of arrays and promises.
+
+The code below reduces an array of asynchronous functions `[func1, func2, func3]` down to a promise chain:
+
+```js
+[func1, func2, func3]
+    .reduce((p, f) => p.then(f), Promise.resolve())
+    .then((result3) => {
+        // use result3
+    });
+```
+
+It is equivalent to the following code:
+
+```js
+Promise.resolve()
+    .then(func1)
+    .then(func2)
+    .then(func3)
+    .then((result3) => {
+        // use result3
+    });
+```
+
+This can be made into a reusable compose function, which is common in functional programming:
+
+```js
+const applyAsync = (acc, val) => acc.then(val);
+const composeAsync =
+    (...funcs) =>
+    (x) =>
+        funcs.reduce(applyAsync, Promise.resolve(x));
+```
+
+The `composeAsync()` function accepts any number of functions as arguments and returns a new function that accepts an initial value to be passed through the composition pipeline:
+
+```js
+const transformData = composeAsync(func1, func2, func3);
+const result3 = transformData(data);
+```
+
+Sequential composition can also be done more succinctly with `async`/`await`:
+
+```js
+let result;
+for (const f of [func1, func2, func3]) {
+  result = await f(result);
+}
+// use last result (i.e. result3)
+```
+
+However, before you compose promises sequentially, consider if this approach is really necessary – it is always better to run promises concurrently so that they do not unnecessarily block each other, unless one promise's execution depends on another's result.
+
 ## Creating promises from old callback APIs
 
 ## Timing
