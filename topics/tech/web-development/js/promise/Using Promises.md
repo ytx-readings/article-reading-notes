@@ -325,6 +325,35 @@ async function main() {
 
 ```
 
+### Promise rejection events
+
+If a promise rejection event is unhandled by any handler, it bubbles up to the top of the call stack, and the host needs to handle it.
+
+#### On the web
+
+On the web (either in a browser window or in a web worker), the two events are:
+
+* `unhandledrejection`: Sent when a promise is rejected, but there is no rejection handler available.
+* `rejectionhandled`: Sent when a promise is attached to a rejected promise that has already caused an `unhandledrejection` event.
+
+In both cases the event type is `PromiseRejectionEvent`, with a `promise` property indicating the promise that is rejected, and a `reason` property that provides the rejection reason.
+
+These make it possible to offer fallback error handling for promises, as well as to help debug issues with your promise management. These handlers are global per context, so all errors will go to the same event handlers, regardless of source.
+
+#### In Node.js
+
+In Node.js, handling promise rejection is slightly different. You capture unhandled rejections by adding a handler for the Node.js `unhandledRejection` event (note that capitalization is different from the event names in browsers).
+
+```js
+process.on("unhandledRejection", (reason, promise) => {
+    // Add code here to examine the "promise" and "reason" values
+});
+```
+
+In Node.js, to prevent the error from being logged in the console, adding this listener is enough. You do not need to do anything equivalent to the browser runtime's `preventDefault` method.
+
+However, if you add that `process.on` listener but don't also have code within it to handle rejected promises, they will just be dropped on the floor and silently ignored. So ideally, you should add code within that listener to examine each rejected promise and make sure it was not caused by an actual code bug.
+
 ## Composition
 
 ## Creating promises from old callback APIs
