@@ -12,6 +12,10 @@ The _eventual value_ of a promise can either be fulfilled with a value, or rejec
 
 When either change of state takes place, the associated handlers queued up by a promise's `then()` method are called. If the promise has already been fulfilled or rejected when a corresponding handler is attached, the handler will be called, so there is no race condition between an asynchronous operation completing and its handlers being attached.
 
+A promise's execution flow is as follows:
+
+![A Promise's execution flow](../../../../../images/js/promise/promise-execution-flow.png)
+
 ## The built-in `Promise` class
 
 ### Constructor
