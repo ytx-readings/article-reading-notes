@@ -356,6 +356,15 @@ However, if you add that `process.on` listener but don't also have code within i
 
 ## Composition
 
+There are four composition tools for running asynchronous operations concurrently:
+
+* [`Promise.all()`](./methods/Promise.all.md)
+* [`Promise.allSettled()`](./methods/Promise.allSettled.md)
+* [`Promise.any()`](./methods/Promise.any.md)
+* [`Promise.race()`](./methods/Promise.race.md)
+
+These methods allow you to run different promises concurrently, starting them simultaneously and making them not wait for each other.
+
 ## Creating promises from old callback APIs
 
 ## Timing
