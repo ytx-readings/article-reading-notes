@@ -181,6 +181,24 @@ doSomething()
     });
 ```
 
+### Using [`async`](./async-await/async%20functions.md)/[`await`](./async-await/await.md)
+
+Using `async`/`await` makes your code more intuitive and looks like synchronous code:
+
+```js
+async function logIngredients() {
+    const url = await doSomething();
+    const res = await fetch(url);
+    const data = await res.json();
+    listOfIngredients.push(data);
+    console.log(listOfIngredients);
+}
+```
+
+This code looks exactly like synchronous code, except for the `await` keywords showing up before promises. One of the only tradeoffs is that it may be easy to forget the await keyword, which can only be fixed when there's a type mismatch (e.g. trying to use a promise as a value).
+
+The `async`/`await` syntax is built on top of promises. Since it very much resembles synchronous code, there is minimal refactoring needed to change the code from promises to `async`/`await`. Click on the links to read more about [`async` functions](./async-await/async%20functions.md) and [`await`](./async-await/await.md).
+
 ## Error handling
 
 ## Composition
