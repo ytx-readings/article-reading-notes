@@ -281,6 +281,50 @@ async function main() {
 }
 ```
 
+### Chaining after a `catch`
+
+It is possible to chain _after_ a failure, i.e. a `catch`, which is useful for doing new actions even after an action failed in the chain. Here is an example:
+
+```js
+doSomething()
+    .then(() => {
+        throw new Error("Something failed");
+
+        console.log("Do this");
+    })
+    .catch(() => {
+        console.error("Do that");
+    })
+    .then(() => {
+        console.log("Do this, no matter what happened before");
+    });
+```
+
+The output is as follows:
+
+```
+Initial
+Do that
+Do this, no matter what happened before
+```
+
+In `async`/`await`, the same code would look like this:
+
+```js
+async function main() {
+    try {
+        await doSomething();
+        throw new Error("Something failed");
+
+        console.log("Do this");
+    } catch (e) {
+        console.error("Do that");
+    }
+    console.log("Do this, no matter what happened before");
+}
+
+```
+
 ## Composition
 
 ## Creating promises from old callback APIs
