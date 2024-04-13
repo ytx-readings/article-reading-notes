@@ -201,6 +201,46 @@ The `async`/`await` syntax is built on top of promises. Since it very much resem
 
 ## Error handling
 
+In the original callback example as shown above, the `failureCallback` callback is used three times. When the logic becomes more complicated, code like this will be even harder to write and read. With promises, you only need use `failureCallback` only once at the end of the promise chain:
+
+```js
+doSomething()
+    .then((result) => doSomethingElse(result))
+    .then((newResult) => doThirdThing(newResult))
+    .then((finalResult) => console.log(`Got the final result: ${finalResult}`))
+    .catch(failureCallback);
+```
+
+If there is an exception, the browser will look down the chain for `.catch()` handlers or `onRejected`. This is similar to how the `try`/`catch` block runs for synchronous code.
+
+```js
+try {
+    const result = syncDoSomething();
+    const newResult = syncDoSomethingElse(result);
+    const finalResult = syncDoThirdThing(newResult);
+    console.log(`Got the final result: ${finalResult}`);
+} catch (error) {
+    failureCallback(error);
+}
+```
+
+The asynchronous code will look very similar to the example above if you write it with `async`/`await`:
+
+```js
+async function foo() {
+    try {
+        const result = await doSomething();
+        const newResult = await doSomethingElse(result);
+        const finalResult = await doThirdThing(newResult);
+        console.log(`Got the final result: ${finalResult}`);
+    } catch (error) {
+        failureCallback(error);
+    }
+}
+```
+
+Promises solve a fundamental flaw with the callback pyramid of doom, by catching all errors, even thrown exceptions and programming errors. This is essential for functional composition of asynchronous operations. All errors are now handled by the [`catch()`](./methods/Promise.prototype.catch.md) method at the end of the chain, and you should almost never need to use `try`/`catch` without using `async`/`await`.
+
 ## Composition
 
 ## Creating promises from old callback APIs
