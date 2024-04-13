@@ -19,11 +19,11 @@ Here is some code that demonstrates callback-style asynchronous operations:
 
 ```js
 function successCallback(value) {
-  console.log('The operation succeeded:', value);
+    console.log('The operation succeeded:', value);
 }
 
 function failureCallback(error) {
-  console.error('The operation failed:', error);
+    console.error('The operation failed:', error);
 }
 
 doSomethingAsync(args, successCallback, failureCallback);
