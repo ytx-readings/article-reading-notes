@@ -6,14 +6,14 @@ To interoperate with existing Promise operations, the JavaScript language allows
 
 ```js
 const aThenable = {
-  then(onFulfilled, onRejected) {
-    onFulfilled({
-      // The thenable is fulfilled with another thenable
-      then(onFulfilled, onRejected) {
-        onFulfilled(42);
-      },
-    });
-  },
+    then(onFulfilled, onRejected) {
+        onFulfilled({
+            // The thenable is fulfilled with another thenable
+            then(onFulfilled, onRejected) {
+                onFulfilled(42);
+            },
+        });
+    },
 };
 
 Promise.resolve(aThenable); // A promise fulfilled with 42

@@ -47,19 +47,19 @@ The callback-based `readFile` API, as shown in the following example, can be tra
 
 ```js
 const readFilePromise = (path) =>
-  new Promise((resolve, reject) => {
-    readFile(path, (error, result) => {
-      if (error) {
-        reject(error);
-      } else {
-        resolve(result);
-      }
+    new Promise((resolve, reject) => {
+        readFile(path, (error, result) => {
+            if (error) {
+                reject(error);
+            } else {
+                resolve(result);
+            }
+        });
     });
-  });
 
 readFilePromise("./data.txt")
-  .then((result) => console.log(result))
-  .catch((error) => console.error("Failed to read data"));
+    .then((result) => console.log(result))
+    .catch((error) => console.error("Failed to read data"));
 ```
 
 ## The `resolve` function
@@ -74,14 +74,14 @@ In the last case, it means code like
 
 ```js
 new Promise((resolve, reject) => {
-  try {
-    thenable.then(
-      (value) => resolve(value),
-      (reason) => reject(reason),
-    );
-  } catch (e) {
-    reject(e);
-  }
+    try {
+        thenable.then(
+            (value) => resolve(value),
+            (reason) => reject(reason),
+        );
+    } catch (e) {
+        reject(e);
+    }
 });
 ```
 
@@ -89,14 +89,14 @@ is roughly equivalent to
 
 ```js
 new Promise((resolve, reject) => {
-  try {
-    thenable.then(
-      (value) => resolve(value),
-      (reason) => reject(reason),
-    );
-  } catch (e) {
-    reject(e);
-  }
+    try {
+        thenable.then(
+            (value) => resolve(value),
+            (reason) => reject(reason),
+        );
+    } catch (e) {
+        reject(e);
+    }
 });
 ```
 
