@@ -193,3 +193,7 @@ doSomething()
 
 * [`async` functions](./async-await/async%20functions.md)
 * [`await`](./async-await/await.md)
+
+## References
+
+* [[MDN] Using Promises](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Using_promises)
