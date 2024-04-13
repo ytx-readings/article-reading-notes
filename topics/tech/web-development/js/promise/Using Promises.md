@@ -39,6 +39,148 @@ This convention has several advantages over the callback style. The following se
 
 ## Chaining promises
 
+A common use case is to execute two or more asynchronous operations one by one, using the previous operation's result as an input to the next operation. In the old days, doing several asynchronous operations will result in _callback hell_, where you have to nest callbacks inside callbacks, making the code hard to read and maintain.
+
+Example of callback hell:
+
+```js
+doSomething(function (result) {
+    doSomethingElse(result, function (newResult) {
+        doThirdThing(newResult, function (finalResult) {
+            console.log(`Got the final result: ${finalResult}`);
+        }, failureCallback);
+    }, failureCallback);
+}, failureCallback);
+```
+
+With promise, we can accomplish the same thing by creating a _promise chain_. This is great because the callbacks are attached to the returned promise, instead of being passed as arguments to the asynchronous function. The code can be written as follows:
+
+```js
+const promise = doSomething();
+const promise2 = promise.then(successCallback, failureCallback);
+```
+
+Note that the `Promise` object returned by the `then()` method is a **new promise**, different from the original. Hence the `promise2` promise object represents completion of not only `promise`, but also of the `successCallback` or `failureCallback` functions as well.
+
+The `successCallback` or `failureCallback` functions can also be asynchronous functions returning a promise. if that is the case, then any callbacks added to `promise2` will get queued behind the promise returned by either `successCallback` or `failureCallback`.
+
+With this pattern you can create longer chains of asynchronous operations, where each promise represents the completion of one asynchronous step in the chain. In addition, the arguments to `then` are optional, and `catch(failureCallback)` is the short-hand for `then(null, failureCallback)`. If your error handling is the same for all steps, you can attach it to the end of the chain:
+
+```js
+doSomething()
+    .then(function (result) {
+        return doSomethingElse(result);
+    })
+    .then(function (newResult) {
+        return doThirdThing(newResult);
+    })
+    .then(function (finalResult) {
+        console.log(`Got the final result: ${finalResult}`);
+    })
+    .catch(failureCallback);
+```
+
+The example above may be written in _arrow functions_ as well:
+
+```js
+doSomething()
+    .then((result) => doSomethingElse(result))
+    .then((newResult) => doThirdThing(newResult))
+    .then((finalResult) => {
+        console.log(`Got the final result: ${finalResult}`);
+    })
+    .catch(failureCallback);
+```
+
+Here, `doSomethingElse` and `doThirdThing` can return any value – if they return promises, the promise is first waited until it settles, and the next callback receives the fulfillment value, not the promise itself.
+
+### Floating promises
+
+It is important to always return promises from `then` callbacks, even if the promise always resolves to `undefined`. If the previous handler started a promise but did not return it, there is no way to track its state anymore, and the promise is said to be "_floating_".
+
+```js
+// WRONG USAGE (floating promise)
+doSomething()
+    .then((url) => {
+        // Missing `return` keyword in front of fetch(url).
+        fetch(url);
+    })
+    .then((result) => {
+        // result is undefined, because nothing is returned from the previous
+        // handler. There's no way to know the return value of the fetch()
+        // call anymore, or whether it succeeded at all.
+    });
+```
+
+By returning the result of the fetch call (which is a promise), we can both track its completion and receive its value when it completes.
+
+```js
+doSomething()
+    .then((url) => {
+        // `return` keyword added
+        return fetch(url);
+    })
+    .then((result) => {
+        // result is a Response object
+    });
+```
+
+Floating promises could be worse if you have race conditions. If the promise from the last handler is not returned, the next `then` handler will be called immediately, before the desired results are available. So the values you intend to obtain may be incomplete. For example:
+
+```js
+// WRONG USAGE (intermediate promise not returned)
+
+const listOfIngredients = [];
+
+doSomething()
+    .then((url) => {
+        // Missing `return` keyword in front of fetch(url).
+        fetch(url)
+            .then((res) => res.json())
+            .then((data) => {
+                listOfIngredients.push(data);
+            });
+    })
+    .then(() => {
+        console.log(listOfIngredients);
+        // listOfIngredients will always be [], because the fetch request hasn't completed yet.
+    });
+```
+
+Hence, there is a rule of thumb: whenever your operation encounters a promise, return the promise and defer its handling to the next handler.
+
+```js
+const listOfIngredients = [];
+
+doSomething()
+    .then((url) => {
+        // `return` keyword now included in front of fetch call.
+        return fetch(url)
+            .then((res) => res.json())
+            .then((data) => {
+                listOfIngredients.push(data);
+            });
+    })
+    .then(() => {
+        console.log(listOfIngredients);
+        // listOfIngredients will now contain data from fetch call.
+    });
+```
+
+Even better, you can flatten the nested chain into a single chain, which makes the code simpler and more readable, and makes error handling easier:
+
+```js
+doSomething()
+    .then((url) => fetch(url))
+    .then((res) => res.json())
+    .then((data) => {
+        listOfIngredients.push(data);
+    })
+    .then(() => {
+        console.log(listOfIngredients);
+    });
+```
+
 ## Error handling
 
 ## Composition
