@@ -422,6 +422,26 @@ However, before you compose promises sequentially, consider if this approach is 
 
 ## Creating promises from old callback APIs
 
+A Promise can be created from scratch using the [`Promise` constructor](./Promise%20constructor.md). This should only be needed to wrap old APIs.
+
+In an ideal world, all asynchronous functions would already return promises. Unfortunately, some APIs still expect success and/or failure callbacks to be passed in the old way. One most obvious example is the `setTimeout` function:
+
+```js
+setTimeout(() => saySomething("10 seconds passed"), 10 * 1000);
+```
+
+In this case if `saySomething` fails or contains an programmatic error, the error cannot be caught. To handle this, we can wrap the function with a promise, wrapping the callback-accepting functions at a lowest possible level, and never call them directly again:
+
+```js
+const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+wait(10 * 1000)
+    .then(() => saySomething("10 seconds passed"))
+    .catch(failureCallback);
+```
+
+The `Promise` constructor takes an executor function that lets us resolve or reject a promise manually. Since `setTimeout()` does not really fail, we left out reject in this case. For more information on how the executor function works, see the [`Promise()` reference](./Promise%20constructor.md).
+
 ## Timing
 
 ## See also
