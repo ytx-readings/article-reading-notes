@@ -444,6 +444,94 @@ The `Promise` constructor takes an executor function that lets us resolve or rej
 
 ## Timing
 
+In the final section, we will look at the technical details in terms of timing, i.e. when the registered callbacks get called.
+
+### Guarantees
+
+In the old callback-style APIs, the calling time of the callbacks depends on the API implementor. For example, the `callback` function in the code below which involves `setTimeout` may get called asynchronously or synchronously.
+
+```js
+function doSomething(callback) {
+    if (Math.random() > 0.5) {
+        callback();
+    } else {
+        setTimeout(() => callback(), 1000);
+    }
+}
+```
+
+This design is highly discouraged, as it may lead to the so-called "_state of Zalgo_". In this case, the callback may be called either asynchronously or synchronously, creating an ambiguity for the caller. So it may be hard to analyze its side effects:
+
+```js
+let value = 1;
+doSomething(() => {
+    value = 2;
+});
+console.log(value); // 1 or 2?
+```
+
+On the other hand, promises are a form of _inversion of control_ – the API implementor does not control when the callback gets called; instead, the job of maintaining the callback queue and deciding when to call the callbacks is delegated to the promise implementation, and both the API user and the API developer automatically gets strong **semantic guarantees**, including:
+
+* Callbacks added with [`then()`](./methods/Promise.prototype.then.md) will never be invoked before the completion of the current run of the JavaScript [event loop](../event-loop/README.md).
+* These callbacks will be invoked even if they were added _after_ the success or failure of the asynchronous operation that the promise represents.
+* Multiple callbacks may be added by calling `then()` several times. They will be invoked one after another, in the order in which they were inserted.
+
+To avoid surprises, functions passed to `then()` will never be called synchronously, even with an already-resolved promise:
+
+```js
+Promise.resolve().then(() => console.log(2));
+console.log(1);
+// Logs: 1, 2
+```
+
+Instead of running immediately, the passed-in function is put on a [microtask queue](../event-loop/microtask.md), which means it runs later (only after the function which created it exits, and when the JavaScript execution stack is empty), just before control is returned to the event loop; i.e. pretty soon:
+
+```js
+const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+wait(0).then(() => console.log(4));
+Promise.resolve()
+    .then(() => console.log(2));
+    .then(() => console.log(3));
+console.log(1); // 1, 2, 3, 4
+```
+
+### Task queues vs. microtasks
+
+Promise callbacks are handled as a [microtask](../event-loop/microtask.md), whereas `setTimeout()` callbacks are handled as task queues.
+
+```js
+const promise = new Promise((resolve, reject) => {
+    console.log('Promise callback');
+    resolve();
+}).then((result) => {
+    console.log('Promise callback (.then)');
+});
+
+setTimeout(() => {
+    console.log('event-loop cycle: Promise (fulfilled)', promise);
+}, 0);
+
+console.log('Promise (pending)', promise);
+```
+
+The code above will output:
+
+```
+Promise callback
+Promise (pending) Promise {<pending>}
+Promise callback (.then)
+event-loop cycle: Promise (fulfilled) Promise {<fulfilled>}
+```
+
+For more details, refer to the "[Microtask](../event-loop/microtask.md)" page.
+
+### When promises and tasks collide
+
+If you encounter the situation in which promises and tasks (such as events or callbacks) are firing in unpredictable orders, you may possibly benefit from using a microtask to check status or balance out your promises when promises are created conditionally.
+
+If you think microtasks may help solve this problem, you need to learn the [`queueMicrotask()`](../event-loop/queueMicrotask.md) to know about how to enqueue a function as a microtask.
+
 ## See also
 
 * [`async` functions](./async-await/async%20functions.md)
