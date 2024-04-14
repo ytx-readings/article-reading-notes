@@ -34,6 +34,8 @@ class SubPromise extends Promise {}
 SubPromise[Symbol.species] === SubPromise; // true
 ```
 
+Promise chaining methods – [`then()`](./methods/Promise.prototype.then.md), [`catch()`](./methods/Promise.prototype.catch.md), and [`finally()`](./methods/Promise.prototype.finally.md) – return new promise objects. They get the constructor to construct the new promise through `this.constructor[@@species]`. If `this.constructor` is undefined, or if `this.constructor[@@species]` is `undefined` or `null`, the default [`Promise()` constructor](../promise/Promise%20constructor.md) is used. Otherwise, the constructor returned by `this.constructor[@@species]` is used to construct the new promise object.
+
 ## References
 
 * [[MDN] `Promise[@@species]`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/@@species)
