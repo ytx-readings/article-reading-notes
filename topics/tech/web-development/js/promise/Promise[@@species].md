@@ -36,6 +36,52 @@ SubPromise[Symbol.species] === SubPromise; // true
 
 Promise chaining methods – [`then()`](./methods/Promise.prototype.then.md), [`catch()`](./methods/Promise.prototype.catch.md), and [`finally()`](./methods/Promise.prototype.finally.md) – return new promise objects. They get the constructor to construct the new promise through `this.constructor[@@species]`. If `this.constructor` is undefined, or if `this.constructor[@@species]` is `undefined` or `null`, the default [`Promise()` constructor](../promise/Promise%20constructor.md) is used. Otherwise, the constructor returned by `this.constructor[@@species]` is used to construct the new promise object.
 
+## Examples
+
+### Species in ordinary objects
+
+The `Symbol.species` property returns the default constructor function, which is the constructor for `Promise`:
+
+```js
+Promise[Symbol.species]; // [Function: Promise]
+```
+
+### Species in derived objects
+
+In an instance of a custom `Promise` subclass, such as `MyPromise`, the `MyPromise` species is the `MyPromise` constructor. However, you may want to override this, in order to return parent `Promise` objects in your derived class methods:
+
+```js
+class MyPromise extends Promise {
+    // Override MyPromise species to the parent Promise constructor
+    static get [Symbol.species]() {
+        return Promise;
+    }
+}
+```
+
+By default, promise methods would return promises with the type of the subclass.
+
+```js
+class MyPromise extends Promise {
+    someValue = 1;
+}
+
+console.log(MyPromise.resolve(1).then(() => {}).someValue); // 1
+```
+
+By overriding `@@species`, the promise methods will return as the base `Promise` type.
+
+```js
+class MyPromise extends Promise {
+    someValue = 1;
+    static get [Symbol.species]() {
+        return Promise;
+    }
+}
+
+console.log(MyPromise.resolve(1).then(() => {}).someValue); // undefined
+```
+
 ## References
 
 * [[MDN] `Promise[@@species]`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/@@species)
