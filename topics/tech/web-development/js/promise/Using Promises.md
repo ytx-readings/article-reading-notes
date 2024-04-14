@@ -540,3 +540,4 @@ If you think microtasks may help solve this problem, you need to learn the [`que
 ## References
 
 * [[MDN] Using Promises](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Using_promises)
+* [Promises/A+ specifications](https://promisesaplus.com/)
