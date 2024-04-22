@@ -31,3 +31,75 @@ The `expression` is resolved in the same way as [`Promise.resolve()`](../methods
 Even when the used promise is already fulfilled, the `async` function's execution still pauses until the next tick. In the meantime, the caller of the `async` function resumes execution. See example below.
 
 Because `await` is only v valid inside `async` functions and modules, which themselves are asynchronous and return promises, the `await` expression never blocks the main thread and only defers execution of code that actually depends on the result, i.e. anything after the `await` expression.
+
+## Examples
+
+### Awaiting a promise to be fulfilled
+
+If a `Promise` is passed to an `await` expression, it waits for the `Promise` to be fulfilled and returns the fulfilled value.
+
+```js
+function resolveAfter2Seconds(x) {
+    return new Promise((resolve) => {
+        setTimeout(() => {
+            resolve(x);
+        }, 2000);
+  });
+}
+
+async function f1() {
+    const x = await resolveAfter2Seconds(10);
+    console.log(x); // 10
+}
+
+f1();
+
+```
+
+### Thenable objects
+
+[Thenable objects](../Thenable.md) are resolved just the same as actual `Promise` objects.
+
+```js
+async function f() {
+    const thenable = {
+        then(resolve, _reject) {
+            resolve("resolved!");
+        },
+    };
+    console.log(await thenable); // "resolved!"
+}
+
+f();
+```
+
+They can also be rejected:
+
+```js
+async function f() {
+    const thenable = {
+        then(resolve, reject) {
+            reject(new Error("rejected!"));
+        },
+    };
+    await thenable; // Throws Error: rejected!
+}
+
+f();
+```
+
+### Conversion to promise
+
+If the value is not a `Promise`, `await` converts the value to a resolved `Promise`, and waits for it. The awaited value's identity does not change as long as it does not have a `then` property that is callable.
+
+```js
+async function f3() {
+    const y = await 20;
+    console.log(y); // 20
+
+    const obj = {};
+    console.log((await obj) === obj); // true
+}
+
+f3();
+```
