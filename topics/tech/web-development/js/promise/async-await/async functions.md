@@ -235,3 +235,45 @@ If you wish to safely perform other jobs after two or more jobs run concurrently
 >
 > * In `sequentialWait`, if promise `fast` rejects before promise `slow` is fulfilled, then an unhandled promise rejection error will be raised, regardless of whether the caller has configured a `catch` clause.
 > * In `concurrent1`, `Promise.all` wires up the promise chain in one go, meaning that the operation will fail-fast regardless of the order of rejection of the promises, and the error will always occur within the configured promise chain, enabling it to be called in the normal way.
+
+### Rewriting a `Promise` chain with an `async` function
+
+An API that returns a `Promise` will result in a promise chain, and it splits the function into many parts. Consider the following code:
+
+```js
+function getProcessedData(url) {
+    return downloadData(url) // returns a promise
+        .catch((e) => downloadFallbackData(url)) // returns a promise
+        .then((v) => processDataInWorker(v)); // returns a promise
+}
+```
+
+It can be written with a single `async` function as follows:
+
+```js
+async function getProcessedData(url) {
+    let v;
+    try {
+        v = await DownloadData(url);
+    } catch (e) {
+        v = wait downloadFallbackData(url);
+    }
+    return processDataInWorker(v);
+}
+```
+
+Alternatively you can chain the promise with `catch()`:
+
+```js
+async function getProcessedData(url) {
+    const v = await downloadData(url).catch((e) => downloadFallbackData(url));
+    return processDataInWorker(v);
+}
+```
+
+In the two rewritten versions, notice there is no `await` statement after the `return` keyword, although that would be valid too: The return value of an `async` function is implicitly wrapped in `Promise.resolve` – if it's not a promise itself (as in the examples).
+
+## References
+
+* [ECMAScript Language Specification: `async` function definitions](https://tc39.es/ecma262/multipage/ecmascript-language-functions-and-classes.html#sec-async-function-definitions)
+* [[MDN] `async` function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function)
