@@ -103,3 +103,55 @@ async function f3() {
 
 f3();
 ```
+
+### Handling rejected promises
+
+If the `Promise` is rejected, the rejected value is thrown.
+
+```js
+async function f4() {
+    try {
+        await Promise.reject(30);
+    } catch (e) {
+        console.log(e); // 30
+    }
+}
+
+f4();
+```
+
+You can handle rejected promises without a `try` block by chaining a [`catch()`](../methods/Promise.prototype.catch) handler.
+
+```js
+const response = await promisedFunction().catch((err) => {
+    console.error(err);
+    return "default response";
+});
+// response will be "default response" if the promise is rejected
+```
+
+This is built on the assumption that `promisedFunction()` _never synchronously throws an error_, but always returns a rejected promise. This is the case for most properly-designed promise-based functions, which usually look like this:
+
+```js
+function promisedFunction() {
+    // immediately return a promise to  minimize the chance of an error being thrown
+    return new Promise((resolve, reject) => {
+        // do something asynchronous
+    });
+}
+```
+
+However, if `promisedFunction()` does thrown an error _synchronously_, _the error won't be caught by the `catch()` handler_, so the `try…catch` statement is necessary.
+
+### Top level `await`
+
+You can use the `await` keyword on its own (outside of an `async` function) in a [module](../../modules/). This means that modules with child modules that use `await` will wait for the child modules to execute before themselves run, all while not blocking other child modules from loading.
+
+Here is an example of a simple module using the **Fetch API** and specifying `await` with the `export` statement. Any modules that include this will wait for the fetch to resolve before running any code.
+
+```js
+// fetch request
+const colors = fetch("../data/colors.json").then((response) => response.json());
+
+export default await colors;
+```
