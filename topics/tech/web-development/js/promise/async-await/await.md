@@ -155,3 +155,117 @@ const colors = fetch("../data/colors.json").then((response) => response.json());
 
 export default await colors;
 ```
+
+### Control flow effects of `await`
+
+When an `await` is encountered in code (either in an `async` function or in a module), the awaited expression is executed, while all code that depends on the expression's value is paused and pushed into the [microtask queue](../../event-loop/microtask.md). The main thread is then freed for the next task in the event loop. This happens even if the awaited value is an already-resolved promise or not a promise. For example, consider the following code:
+
+```js
+async function foo(name) {
+    console.log(name, "start");
+    console.log(name, "middle");
+    console.log(name, "end");
+}
+
+foo("First");
+foo("Second");
+
+// First start
+// First middle
+// First end
+// Second start
+// Second middle
+// Second end
+```
+
+In this case, the two `async` functions are synchronous in effect, because they don't contain any `await` expression. The three statements happen in the same tick. In promise terms, the function corresponds to:
+
+```js
+function foo(name) {
+    return new Promise((resolve) => {
+        console.log(name, "start");
+        console.log(name, "middle");
+        console.log(name, "end");
+        resolve();
+    });
+}
+```
+
+However, as soon as there is one `await`, the function becomes asynchronous, and the execution of following statements is deferred to the next tick:
+
+```js
+async function foo(name) {
+    console.log(name, "start");
+    await console.log(name, "middle");
+    console.log(name, "end");
+}
+
+foo("First");
+foo("Second");
+
+// First start
+// First middle
+// Second start
+// Second middle
+// First end
+// Second end
+```
+
+This corresponds to:
+
+```js
+function foo(name) {
+    return new Promise((resolve) => {
+        console.log(name, "start");
+        console.log(name, "middle");
+        resolve();
+    }).then(() => {
+        console.log(name, "end");
+    });
+}
+```
+
+While the extra `then()` handler is not necessary, and the handler can be merged with the executor passed to the constructor, the `then()` handler's existence means the code will take one extra tick to complete. The same happens for `await`. Therefore, make sure to use `await` only when necessary (to unwrap promises into their values).
+
+Other microtasks can execute before the `async` function resumes. This example uses [`queueMicrotask()`](../../event-loop/queueMicrotask.md) to demonstrate how the microtask queue is processed when each `await` expression is encountered.
+
+```js
+let i = 0;
+
+queueMicrotask(function test() {
+    i++;
+    console.log("microtask", i);
+    if (i < 3) {
+        queueMicrotask(test);
+    }
+});
+
+(async () => {
+    console.log("async function start");
+    for (let i = 1; i < 3; i++) {
+        await null;
+        console.log("async function resume", i);
+    }
+    await null;
+    console.log("async function end");
+})();
+
+queueMicrotask(() => {
+    console.log("queueMicrotask() after calling async function");
+});
+
+console.log("script sync part end");
+
+// Logs:
+// async function start
+// script sync part end
+// microtask 1
+// async function resume 1
+// queueMicrotask() after calling async function
+// microtask 2
+// async function resume 2
+// microtask 3
+// async function end
+```
+
+In this example, the `test()` function is always called before the async function resumes, so the microtasks they each schedule are always executed in an intertwined fashion. On the other hand, because both `await` and `aueueMicrotask` schedule microtasks, the order of execution is always based on the order of scheduling. This is why the "`queueMicrotask()` after calling async function" log happens after the `async` function resumes for the first time.
