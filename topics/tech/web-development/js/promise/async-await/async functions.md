@@ -130,3 +130,108 @@ foo().catch(() => {}); // Attempt to swallow all errors…
 ```
 
 `async function` declarations behave similar to `function` declarations — they are [hoisted](../../hoisting.md) to the top of their scope and can be called anywhere in their scope, and they can be redeclared only in certain contexts.
+
+## Examples
+
+### Async functions and execution order
+
+```js
+function resolveAfter2Seconds() {
+    console.log("starting slow promise");
+    return new Promise((resolve) => {
+        setTimeout(() => {
+            resolve("slow");
+            console.log("slow promise is done");
+        }, 2000);
+    });
+}
+
+function resolveAfter1Second() {
+    console.log("starting fast promise");
+    return new Promise((resolve) => {
+        setTimeout(() => {
+            resolve("fast");
+            console.log("fast promise is done");
+        }, 1000);
+    });
+}
+
+async function sequentialStart() {
+  console.log("== sequentialStart starts ==");
+
+  // 1. Start a timer, log after it's done
+  const slow = resolveAfter2Seconds();
+  console.log(await slow);
+
+  // 2. Start the next timer after waiting for the previous one
+  const fast = resolveAfter1Second();
+  console.log(await fast);
+
+  console.log("== sequentialStart done ==");
+}
+
+async function sequentialWait() {
+    console.log("== sequentialWait starts ==");
+
+    // 1. Start two timers without waiting for each other
+    const slow = resolveAfter2Seconds();
+    const fast = resolveAfter1Second();
+
+    // 2. Wait for the slow timer to complete, and then log the result
+    console.log(await slow);
+    // 3. Wait for the fast timer to complete, and then log the result
+    console.log(await fast);
+
+    console.log("== sequentialWait done ==");
+}
+
+async function concurrent1() {
+    console.log("== concurrent1 starts ==");
+
+    // 1. Start two timers concurrently and wait for both to complete
+    const results = await Promise.all([
+        resolveAfter2Seconds(),
+        resolveAfter1Second(),
+    ]);
+    // 2. Log the results together
+    console.log(results[0]);
+    console.log(results[1]);
+
+    console.log("== concurrent1 done ==");
+}
+
+async function concurrent2() {
+    console.log("== concurrent2 starts ==");
+
+    // 1. Start two timers concurrently, log immediately after each one is done
+    await Promise.all([
+        (async () => console.log(await resolveAfter2Seconds()))(),
+        (async () => console.log(await resolveAfter1Second()))(),
+    ]);
+    console.log("== concurrent2 done ==");
+}
+
+sequentialStart(); // after 2 seconds, logs "slow", then after 1 more second, "fast"
+
+// wait above to finish
+setTimeout(sequentialWait, 4000); // after 2 seconds, logs "slow" and then "fast"
+
+// wait again
+setTimeout(concurrent1, 7000); // same as sequentialWait
+
+// wait again
+setTimeout(concurrent2, 10000); // after 1 second, logs "fast", then after 1 more second, "slow"
+```
+
+#### `await` and concurrency
+
+In `sequentialStart`, execution suspends 2 seconds for the first `await`, and then another second for the second `await`. The second timer is not created until the first has already fired. So the code finishes after 3 seconds.
+
+In `sequentialWait`, both timers are created and then `await`ed. The timers run concurrently, which means the code finishes in 2 rather than 3 seconds, i.e. the slowest timer. However, the `await` calls still run in series, which means the second `await` will wait for the first one to finish. In this case, the result of the fastest timer is processed after the slowest.
+
+If you wish to safely perform other jobs after two or more jobs run concurrently and are complete, you must await a call to [`Promise.all()`](../methods/Promise.all.md) or [`Promise.allSettled()`](../methods/Promise.allSettled.md) before that job.
+
+> **Warning**: The functions `sequentialWait` and `concurrent1` are not functionally equivalent.
+>
+> * In `sequentialWait`, if promise `fast` rejects before promise `slow` is fulfilled, then an unhandled promise rejection error will be raised, regardless of whether the caller has configured a `catch` clause.
+> * In `concurrent1`, `Promise.all` wires up the promise chain in one go, meaning that the operation will fail-fast regardless of the order of rejection of the promises, and the error will always occur within the configured promise chain, enabling it to be called in the normal way.
