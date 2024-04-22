@@ -20,7 +20,7 @@ Throws the rejection reason if the promise or thenable object is rejected.
 
 `await` is usually used to unwrap promises by passing a [`Promise`](../README.md) as the `expression`. Using `await` pauses the execution of its surrounding `async` function until the promise is settled (fulfilled or rejected). Then the execution resumes, the value of the `await` expression becomes that of the fulfilled promise.
 
-If the promise is rejected, then the `await` expression throws the rejected value. The function containing the `await` expression will appear in the stack trace of the error. Otherwise, if the rejected promise is not awaited or is immediately returned, the caller function will not appear in the stack trace.
+If the promise is rejected, then the `await` expression throws the rejected value. The function containing the `await` expression will appear in the [stack trace](#improving-stack-trace) of the error. Otherwise, if the rejected promise is not awaited or is immediately returned, the caller function will not appear in the stack trace.
 
 The `expression` is resolved in the same way as [`Promise.resolve()`](../methods/Promise.resolve.md): it's always converted to a native `Promise` and then awaited. If the `expression` is a:
 
@@ -269,3 +269,59 @@ console.log("script sync part end");
 ```
 
 In this example, the `test()` function is always called before the async function resumes, so the microtasks they each schedule are always executed in an intertwined fashion. On the other hand, because both `await` and `aueueMicrotask` schedule microtasks, the order of execution is always based on the order of scheduling. This is why the "`queueMicrotask()` after calling async function" log happens after the `async` function resumes for the first time.
+
+### Improving stack trace
+
+Sometimes, the `await` is omitted when a promise is directly returned from an `async` function:
+
+```js
+async function noAwait() {
+    // Some actions...
+
+    return /* await */ lastAsyncTask();
+}
+```
+
+However, consider the case where `lastAsyncTask()` asynchronously throws an error:
+
+```js
+async function lastAsyncTask() {
+    await null;
+    throw new Error("failed");
+}
+
+async function noAwait() {
+    return lastAsyncTask();
+}
+
+noAwait();
+
+// Error: failed
+//    at lastAsyncTask
+```
+
+Only `lastAsyncTask` appears in the stack trace, because the promise is rejected after it has already been returned from `noAwait` – in some sense, the promise is unrelated to `noAwait`. To improve the stack trace, you can use `await` to unwrap the promise, so that the exception gets thrown into the current function. The exception will then be immediately wrapped into a new rejected promise, but during error creation, the caller will appear in the stack trace:
+
+```js
+async function lastAsyncTask() {
+    await null;
+    throw new Error("failed");
+}
+
+async function withAwait() {
+    return await lastAsyncTask();
+}
+
+withAwait();
+
+// Error: failed
+//    at lastAsyncTask
+//    at async withAwait
+```
+
+However, there's a little performance penalty coming with `return await` because the `Promise` has to be unwrapped and wrapped again.
+
+## References
+
+* [[ECMASCript] `async` function definitions](https://tc39.es/ecma262/multipage/ecmascript-language-functions-and-classes.html#sec-async-function-definitions)
+* [[MDN] `await`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/await)
