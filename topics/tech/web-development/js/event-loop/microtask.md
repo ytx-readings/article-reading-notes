@@ -43,6 +43,14 @@ The event loop keeps track of the **task queue** and the **microtask queue**.
 * [`Promise`](../promise/README.md): Handles asynchronous operations and provides a way to run code after the completion of asynchronous operations.
 * `MutationObserver`: An interface providing ability to watch for changes made to the DOM tree.
 
+## Why do we need microtasks?
+
+The main reason to use microtasks is to ensure the consistent ordering of tasks, even when results or data are available synchronously, but while simultaneously reducing the risk of user-discernible delays in operations.
+
+## When to use microtasks?
+
+The microtasks are particularly useful for capturing or checking results, or performing cleanup, after the main body of a JavaScript execution context exists, but before any event handlers, timeouts and intervals, or other callbacks are processed.
+
 ## References
 
 * [MDN](https://developer.mozilla.org/)
