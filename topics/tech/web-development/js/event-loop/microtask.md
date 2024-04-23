@@ -30,6 +30,13 @@ At first the difference between them look subtle, and they serve similar purpose
 
 > **Warning**: Since microtasks can by themselves can add more microtasks, and the event loop continues to process the microtask queue until it is empty, it is possible to create an endless queue of microtask queue that the event loop will process indefinitely. So you should be cautious about recursively adding microtasks.
 
+## Execution order
+
+The event loop keeps track of the **task queue** and the **microtask queue**.
+
+* At the start of each iteration of the event loop, the runtime executes the task that is at the front of the task queue.
+* Then, after the task exits, and the execution stack is empty, the runtime processes all of the microtasks in the microtask queue until the microtask queue is empty, before moving on to the next task in the task queue. Note that the microtasks themselves can enqueue microtasks as well, and those enqueued microtasks will get executed until the microtask queue is empty, before the event loop moves on to the next task in the task queue, and before the end of the current event loop iteration.
+
 ## References
 
 * [MDN](https://developer.mozilla.org/)
