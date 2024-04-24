@@ -54,5 +54,5 @@ The microtasks are particularly useful for capturing or checking results, or per
 ## References
 
 * [MDN](https://developer.mozilla.org/)
-    * [Microtask guide](https://developer.mozilla.org/)
     * [In depth: Microtasks and the JavaScript runtime environment](https://developer.mozilla.org/en-US/docs/Web/API/HTML_DOM_API/Microtask_guide/In_depth)
+    * [Using microtasks in JavaScript with `queueMicrotask()`](https://developer.mozilla.org/en-US/docs/Web/API/HTML_DOM_API/Microtask_guide)
