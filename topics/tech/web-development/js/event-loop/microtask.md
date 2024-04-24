@@ -51,6 +51,90 @@ The main reason to use microtasks is to ensure the consistent ordering of tasks,
 
 The microtasks are particularly useful for capturing or checking results, or performing cleanup, after the main body of a JavaScript execution context exists, but before any event handlers, timeouts and intervals, or other callbacks are processed.
 
+## Examples
+
+### Simple microtask example
+
+In this simple example, we see that enqueueing a microtask causes the microtask's callback to run after the body of this top-level script is done running.
+
+```js
+console.log("Before enqueueing the microtask");
+queueMicrotask(() => {
+    console.log("The microtask has run.");
+});
+console.log("After enqueueing the microtask");
+```
+
+Result:
+
+```
+Before enqueueing the microtask
+After enqueueing the microtask
+The microtask has run.
+```
+
+### Timeout and microtask example
+
+In the example below, we schedule a timeout to be fired after 0 milliseconds (as soon as possible). This demonstrates the difference between what "as soon as possible" means when scheduling a new _task_ (such as using `setTimeout()`) vs. using a _microtask_.
+
+```js
+let callback = () => console.log("Regular timeout callback has run");
+
+let urgentCallback = () => console.log("*** Oh noes! An urgent callback has run!");
+
+console.log("Main program started");
+setTimeout(callback, 0);
+queueMicrotask(urgentCallback);
+console.log("Main program exiting");
+```
+
+Result:
+
+```
+Main program started
+Main program exiting
+*** Oh noes! An urgent callback has run!
+Regular timeout callback has run
+```
+
+Note that after the task handling the main program has finished, the event loop checks the microtask queue, and runs the microtask `urgentCallback`, before moving to the task queue containing the timeout callback `callback`. The _tasks and microtasks are kept on separate queues_, and microtasks always get executed first while the microtask queue is not empty.
+
+### Microtask from a function
+
+This example expands slightly on the previous one, by adding a function that does the same work. The important point is that the microtask is not processed when the function exits, _but when the main program exits_.
+
+```js
+let callback = () => console.log("Regular timeout callback has run");
+
+let urgentCallback = () => console.log("*** Oh noes! An urgent callback has run!");
+
+let doWork = () => {
+    let result = 1;
+
+    queueMicrotask(urgentCallback);
+
+    for (let i = 2; i <= 10; i++) {
+        result *= i;
+    }
+    return result;
+}
+
+console.log("Main program started");
+setTimeout(callback, 0);
+console.log(`10! equals ${doWork()}`);
+console.log("Main program exiting");
+```
+
+Result:
+
+```
+Main program started
+10! equals 3628800
+Main program exiting
+*** Oh noes! An urgent callback has run!
+Regular timeout callback has run
+```
+
 ## References
 
 * [MDN](https://developer.mozilla.org/)
